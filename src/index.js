@@ -1,7 +1,7 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce'
 import Notiflix from 'notiflix'
-import  fetchCountries from './fetchCountries'
+import res from './fetchCountries'
 import countries  from './countries/countries.hbs'
 import country from './countries/country.hbs'
 
@@ -20,40 +20,41 @@ function clearMarkup() {
 let countryToSearch = '';
 
 const DEBOUNCE_DELAY = 300;
-refs.countryInput.addEventListener('input', debounce(onCountryInput, DEBOUNCE_DELAY))
-
-function onCountryInput() {
+refs.countryInput.addEventListener('input', debounce(onCountryInput, DEBOUNCE_DELAY));
+function onCountryInput(e) {
+    e.preventDefault();
     countryToSearch = refs.countryInput.value;
     console.log(countryToSearch);
-
-    fetchCountries(countryToSearch)
+    
+     res.fetchArticles(countryToSearch)
         .then(data => {
             if (data.length > 10) {
                 alertTooManyMatches();
                 clearMarkup()
-            } else if (data.status === 404) {
+            }if (data.status === 404) {
                 alertWrongName();
                 clearMarkup()
-            } else if (data.length === 1) {
-                buildListMarkup(data, country);
-            } else if (data.length <= 10) {
-                buildListMarkup(data, countries);
+            } if (data.length === 1) {
+                clearMarkup();
+                buildItemMarkup(country, data[0]);
+            } else if (data.length <= 10 && data.length > 1) {
+                clearMarkup();
+                buildListMarkup(countries, data);
             }
         })
         .catch(Error => {
-            Error({
-                text: "You must enter query parameters!"
-            });
+            clearMarkup();
             console.log(Error)
-            clearMarkup()
         });
 }
-
-function buildListMarkup(items, template) {
-  const markup = items.map(count => template(count)).join();
-  refs.countryList.insertAdjacentHTML('afterbegin', markup)
+   function buildListMarkup(template,countries) {
+        const markup = countries.map(county => template(country)).join();
+       refs.countryList.insertAdjacentHTML('beforeend', markup);
+   }
+function buildItemMarkup(template, country) {
+    const markup = template(country);
+    refs.countryInfo.insertAdjacentHTML('beforeend', markup);
 }
-
 function alertWrongName() {
   Notiflix.Notify.failure('Oops, there is no country with that name')
 }
