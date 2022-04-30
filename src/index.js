@@ -1,8 +1,8 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce'
 import Notiflix from 'notiflix'
-import res from './fetchCountries'
-import countries  from './countries/countries.hbs'
+import API from './fetchCountries'
+import listOfContries  from './countries/listOfContries.hbs'
 import country from './countries/country.hbs'
 
 const refs = {
@@ -13,7 +13,8 @@ countryInfo :document.querySelector('.country-info')
 
 // очистка инпута при ошибке
 function clearMarkup() {
-  refs.countryInfo.innerHTML = '';
+    refs.countryInfo.innerHTML = '';
+    refs.countryList.innerHTML = '';
 }
 //---------
 
@@ -26,35 +27,37 @@ function onCountryInput(e) {
     countryToSearch = refs.countryInput.value;
     console.log(countryToSearch);
     
-     res.fetchArticles(countryToSearch)
-        .then(data => {
-            if (data.length > 10) {
-                alertTooManyMatches();
-                clearMarkup()
-            }if (data.status === 404) {
-                alertWrongName();
-                clearMarkup()
-            } if (data.length === 1) {
-                clearMarkup();
-                buildItemMarkup(country, data[0]);
-            } else if (data.length <= 10 && data.length > 1) {
-                clearMarkup();
-                buildListMarkup(countries, data);
-            }
-        })
+     API.fetchArticles(countryToSearch)
+        .then(checkingNumberOfCountries)
         .catch(Error => {
             clearMarkup();
             console.log(Error)
         });
 }
-   function buildListMarkup(template,countries) {
-        const markup = countries.map(county => template(country)).join();
-       refs.countryList.insertAdjacentHTML('beforeend', markup);
-   }
-function buildItemMarkup(template, country) {
-    const markup = template(country);
-    refs.countryInfo.insertAdjacentHTML('beforeend', markup);
+function checkingNumberOfCountries(countries) {
+            if (countries.length > 10) {
+                alertTooManyMatches();
+                clearMarkup()
+            }if (countries.status === 404) {
+                alertWrongName();
+                clearMarkup()
+            }if (countries.length === 1) {
+                clearMarkup();
+                renderMarkup(country, countries[0]);
+            }if (countries.length <= 10 && countries.length > 1) {
+                clearMarkup();
+                renderMarkup(listOfContries, countries);
+            }
+        
 }
+   function renderMarkup(template, countries) {
+  const markup = template(countries);
+   refs.countryInfo.insertAdjacentHTML('beforeend', markup);
+}
+// function buildItemMarkup(template, country) {
+//     const markup = template(country);
+//     refs.countryInfo.insertAdjacentHTML('beforeend', markup);
+// }
 function alertWrongName() {
   Notiflix.Notify.failure('Oops, there is no country with that name')
 }

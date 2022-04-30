@@ -32,10 +32,11 @@
 // })
 'use strict';
 
-const baseUrl = 'https://restcountries.com/v3.1/name/';
-export default {
-  fetchArticles(query) {
-    const requestParams = `${query}`;
-    return fetch(baseUrl + requestParams).then(res => res.json());
-  },
-};
+const baseUrl = 'https://restcountries.com/v3.1/name';
+
+ function fetchArticles(query) {
+     const requestParams = `${query}`;
+     return fetch(`${baseUrl}/${requestParams}`)
+         .then(res => res.json());
+  }
+export default { fetchArticles};
