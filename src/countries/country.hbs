@@ -1,15 +1,17 @@
-<ul>
-    <li>
-        <ul>
-            <li><img src="{{flags.svg}}" alt="" class="flag" width="50" /></li>
-            <li><h1 class="country"> {{name.official}}</h1></li>
-        </ul>
+<ul class="list-countries">
+    <li class="item-container">
+        <img src="{{flags.svg}}" alt="" class="flag" width="80" height="70" />
+        <h1 class="country"> {{name}}</h1></li>
     </li>
-    <li><p class="capital"><span class="text">Capital: </span>{{capital}}</p></li>
-    <li><p class="population"><span class="text">Population: </span>{{population}}</p></li>        
-    <li> <ul class="languages"><span class="text">Languages:</span>{{#each lang}}
-            <li class="tag-list__item">{{name}}</li>
-            {{/each}}
-        </ul>  
+    <li class="item-container"><p class="capital"><span class="text">Capital: </span>{{capital}}</p></li>
+    <li class="item-container"><p class="population"><span class="text">Population: </span>{{population}}</p></li>        
+    <li class="item-container"><span class="text">Languages:</span>
+            <ul class="item-list"">
+                {{#each languages}}
+                <li class="languages">
+                    {{name}}; 
+                </li>
+                {{/each}}
+            </ul> 
     </li>
 </ul> 
