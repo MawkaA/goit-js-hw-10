@@ -54,10 +54,7 @@ function checkingNumberOfCountries(countries) {
   const markup = template(countries);
    refs.countryInfo.insertAdjacentHTML('beforeend', markup);
 }
-// function buildItemMarkup(template, country) {
-//     const markup = template(country);
-//     refs.countryInfo.insertAdjacentHTML('beforeend', markup);
-// }
+
 function alertWrongName() {
   Notiflix.Notify.failure('Oops, there is no country with that name')
 }
