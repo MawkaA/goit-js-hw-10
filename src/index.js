@@ -24,31 +24,29 @@ const DEBOUNCE_DELAY = 300;
 refs.countryInput.addEventListener('input', debounce(onCountryInput, DEBOUNCE_DELAY));
 function onCountryInput(e) {
     e.preventDefault();
-    countryToSearch = refs.countryInput.value;
+    countryToSearch = refs.countryInput.value.trim();
     console.log(countryToSearch);
     
      API.fetchArticles(countryToSearch)
         .then(checkingNumberOfCountries)
         .catch(Error => {
+            if(countries.status === 404)
             clearMarkup();
-            console.log(Error)
+            return alertWrongName();
         });
 }
 function checkingNumberOfCountries(countries) {
             if (countries.length > 10) {
-                alertTooManyMatches();
-                clearMarkup()
-            }if (countries.status === 404) {
-                alertWrongName();
-                clearMarkup()
-            }if (countries.length === 1) {
                 clearMarkup();
-                renderMarkup(country, countries[0]);
+                return alertTooManyMatches();
+            }
+            if (countries.length === 1) {
+                clearMarkup();
+                return renderMarkup(country, countries[0]);
             }if (countries.length <= 10 && countries.length > 1) {
                 clearMarkup();
-                renderMarkup(listOfContries, countries);
-            }
-        
+                return renderMarkup(listOfContries, countries);
+            }     
 }
    function renderMarkup(template, countries) {
   const markup = template(countries);
