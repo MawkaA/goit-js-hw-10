@@ -2,7 +2,7 @@ import './css/styles.css';
 import debounce from 'lodash.debounce'
 import Notiflix from 'notiflix'
 import API from './fetchCountries'
-import listOfContries  from './countries/listOfContries.hbs'
+import listOfCountries  from './countries/listOfCountries.hbs'
 import country from './countries/country.hbs'
 
 const refs = {
@@ -28,35 +28,38 @@ function onCountryInput(e) {
     console.log(countryToSearch);
     
      API.fetchArticles(countryToSearch)
-        .then(checkingNumberOfCountries)
-        .catch(Error => {
-            if(countries.status === 404)
-            clearMarkup();
-            return alertWrongName();
-        });
-}
-function checkingNumberOfCountries(countries) {
+        .then(countries => {
             if (countries.length > 10) {
-                clearMarkup();
-                return alertTooManyMatches();
-            }
-            if (countries.length === 1) {
-                clearMarkup();
-                return renderMarkup(country, countries[0]);
-            }if (countries.length <= 10 && countries.length > 1) {
-                clearMarkup();
-                return renderMarkup(listOfContries, countries);
-            }     
+            clearMarkup();
+            alertTooManyMatches();
+            return;
+        }
+            else if (countries.length === 1) {
+            clearMarkup();
+            renderMarkup(country, countries[0]);
+            return;
+        }  
+            else  if(10>countries.length>1){
+            clearMarkup();
+            renderMarkup(listOfCountries, countries);
+            return;
+        }   
+        })  
+        .catch(() => 
+            clearMarkup(),
+            alertWrongName()
+        );
 }
-   function renderMarkup(template, countries) {
-  const markup = template(countries);
-   refs.countryInfo.insertAdjacentHTML('beforeend', markup);
+
+function renderMarkup(template, countries) {
+const markup = template(countries);
+refs.countryInfo.insertAdjacentHTML('beforeend', markup);
 }
 
 function alertWrongName() {
-  Notiflix.Notify.failure('Oops, there is no country with that name')
+    Notiflix.Notify.failure('Oops, there is no country with that name');
 }
 
 function alertTooManyMatches() {
-    Notiflix.Notify.info('Too many matches found. Please enter a more specific name.')
+    Notiflix.Notify.success('Too many matches found. Please enter a more specific name.')
 }
