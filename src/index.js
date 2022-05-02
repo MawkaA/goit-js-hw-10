@@ -38,17 +38,17 @@ function onCountryInput(e) {
             clearMarkup();
             renderMarkup(country, countries[0]);
             return;
+            
         }  
-            else  if(10>countries.length>1){
+            else  if(countries.length>1&&countries.length<=10){
             clearMarkup();
             renderMarkup(listOfCountries, countries);
             return;
         }   
         })  
-        .catch(() => 
-            clearMarkup(),
-            alertWrongName()
-        );
+        .catch (()=>clearMarkup(),
+                    alertWrongName());
+        
 }
 
 function renderMarkup(template, countries) {
@@ -61,5 +61,5 @@ function alertWrongName() {
 }
 
 function alertTooManyMatches() {
-    Notiflix.Notify.success('Too many matches found. Please enter a more specific name.')
+    Notiflix.Notify.info('Too many matches found. Please enter a more specific name.')
 }
