@@ -26,7 +26,9 @@ function onCountryInput(e) {
     e.preventDefault();
     countryToSearch = refs.countryInput.value.trim();
     console.log(countryToSearch);
-    
+    if (!countryToSearch){
+        return clearMarkup();
+    }
      API.fetchArticles(countryToSearch)
         .then(countries => {
             if (countries.length > 10) {
@@ -46,8 +48,8 @@ function onCountryInput(e) {
             return;
         }   
         })  
-        .catch (()=>clearMarkup(),
-                    alertWrongName());
+        .catch (()=>{clearMarkup(),
+                    alertWrongName()});
         
 }
 
